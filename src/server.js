@@ -13,7 +13,7 @@ import {
 
 const server = express();
 
-const port = 3000;
+const port = process.env.PORT;
 
 server.use(express.json());
 
@@ -30,7 +30,7 @@ server.use(catchAllErrorHandler);
 console.log(listEndpoints(server));
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017", {
+  .connect(process.env.MONGO_CONNECTION, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useFindAndModify: false,
