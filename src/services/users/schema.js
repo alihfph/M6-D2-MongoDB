@@ -15,7 +15,25 @@ const UserSchema = new Schema(
       name: "string",
       img: "string",
     },
-    reviews: [{ text: "string", user: "string" }],
+    reviews: [
+      {
+        type: new Schema(
+          {
+            text: {
+              type: String,
+              required: [true, "text field is required"],
+              trim: true,
+            },
+            user: {
+              type: String,
+              required: [true, "user field is required"],
+              trim: true,
+            },
+          },
+          { timestamps: true }
+        ),
+      },
+    ],
   },
   { timestamps: true }
 );
