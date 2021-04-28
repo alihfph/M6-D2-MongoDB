@@ -113,7 +113,7 @@ usersRouter.get("/:id/reviews/", async (req, res, next) => {
   }
 });
 
-usersRouter.get("/:id/reviews/:bookId", async (req, res, next) => {
+usersRouter.get("/:id/reviews/:reviewId", async (req, res, next) => {
   try {
     const { reviews } = await UserModel.findOne(
       {
@@ -121,7 +121,7 @@ usersRouter.get("/:id/reviews/:bookId", async (req, res, next) => {
       },
       {
         reviews: {
-          $elemMatch: { _id: mongoose.Types.ObjectId(req.params.bookId) },
+          $elemMatch: { _id: mongoose.Types.ObjectId(req.params.reviewId) },
         },
       }
     ); // PROJECTION, elemMatch is a projection operator)
