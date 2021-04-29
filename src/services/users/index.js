@@ -1,13 +1,12 @@
 import express from "express";
-
+import mongoose from "mongoose";
 import UserModel from "./schema.js";
 
 const usersRouter = express.Router();
-import mongoose from "mongoose";
 
 usersRouter.get("/", async (req, res, next) => {
   try {
-    const users = await UserModel.find();
+    const users = await UserModel.find().populate("authors");
     res.send(users);
   } catch (error) {
     next(error);
@@ -17,7 +16,7 @@ usersRouter.get("/", async (req, res, next) => {
 usersRouter.get("/:id", async (req, res, next) => {
   try {
     const id = req.params.id;
-    const user = await UserModel.findById(id);
+    const user = await UserModel.findById(id).populate("authors");
     if (user) {
       res.send(user);
     } else {
@@ -81,7 +80,10 @@ usersRouter.post("/:id/reviews/", async (req, res, next) => {
     const userReview = req.body;
     console.log(userReview);
     // const purchasedBook = await BookModel.findById(bookId, { _id: 0 })
-    const addReviews = { ...userReview, date: new Date() };
+    const addReviews = {
+      ...userReview,
+      date: new Date(),
+    };
     // 2. update the specified user (userId) purchaseHistory by adding a new element to that array
 
     const updated = await UserModel.findByIdAndUpdate(
@@ -91,7 +93,10 @@ usersRouter.post("/:id/reviews/", async (req, res, next) => {
           reviews: addReviews,
         },
       },
-      { runValidators: true, new: true }
+      {
+        runValidators: true,
+        new: true,
+      }
     );
     res.send(updated);
   } catch (error) {
@@ -121,7 +126,9 @@ usersRouter.get("/:id/reviews/:reviewId", async (req, res, next) => {
       },
       {
         reviews: {
-          $elemMatch: { _id: mongoose.Types.ObjectId(req.params.reviewId) },
+          $elemMatch: {
+            _id: mongoose.Types.ObjectId(req.params.reviewId),
+          },
         },
       }
     ); // PROJECTION, elemMatch is a projection operator)
@@ -150,7 +157,9 @@ usersRouter.delete("/:id/reviews/:reviewId", async (req, res, next) => {
       req.params.id,
       {
         $pull: {
-          reviews: { _id: mongoose.Types.ObjectId(req.params.reviewId) },
+          reviews: {
+            _id: mongoose.Types.ObjectId(req.params.reviewId),
+          },
         },
       },
       {
@@ -171,7 +180,14 @@ usersRouter.put("/:id/reviews/:reviewId", async (req, res, next) => {
         _id: mongoose.Types.ObjectId(req.params.id),
         "reviews._id": mongoose.Types.ObjectId(req.params.reviewId),
       },
-      { $set: { "reviews.$": { ...req.body, _id: req.params.reviewId } } }, // The concept of the $ is pretty similar as having something like const $ = array.findIndex(el => el._id === req.params.bookId)
+      {
+        $set: {
+          "reviews.$": {
+            ...req.body,
+            _id: req.params.reviewId,
+          },
+        },
+      }, // The concept of the $ is pretty similar as having something like const $ = array.findIndex(el => el._id === req.params.bookId)
       {
         runValidators: true,
         new: true,

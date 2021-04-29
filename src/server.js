@@ -4,6 +4,7 @@ import listEndpoints from "express-list-endpoints";
 import mongoose from "mongoose";
 
 import usersRouter from "./services/users/index.js";
+import authorsRouter from "./services/authors/index.js";
 
 import {
   notFoundErrorHandler,
@@ -20,6 +21,7 @@ server.use(express.json());
 server.use(cors());
 
 server.use("/articles", usersRouter);
+server.use("/authors", authorsRouter);
 
 // ERROR HANDLERS MIDDLEWARES
 

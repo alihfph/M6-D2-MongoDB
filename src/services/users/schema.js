@@ -11,10 +11,7 @@ const UserSchema = new Schema(
       name: "string",
       img: "string",
     },
-    author: {
-      name: "string",
-      img: "string",
-    },
+    authors: [{ type: Schema.Types.ObjectId, required: true, ref: "Author" }],
     reviews: [
       {
         type: new Schema(
@@ -46,5 +43,21 @@ UserSchema.post("validate", function (error, doc, next) {
     next();
   }
 });
+
+// UserSchema.static("findArticleWithAuthors", async function (id) {
+//   const article = await this.findOne({ _id: id }).populate("authors");
+//   return article;
+// });
+
+// UserSchema.static("findArticlesWithAuthors", async function (query) {
+//   const total = await this.countDocuments(query.criteria);
+//   const books = await this.find(query.criteria)
+//     // .skip(query.options.skip)
+//     // .limit(query.options.limit)
+//     // .sort(query.options.sort)
+//     .populate("authors");
+
+//   return { total, books };
+// });
 
 export default model("User", UserSchema);
