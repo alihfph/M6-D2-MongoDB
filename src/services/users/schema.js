@@ -29,8 +29,8 @@ const UserSchema = new Schema(
               required: [true, "user field is required"],
               trim: true,
             },
-          },
-          { timestamps: true }
+          }
+          // { timestamps: true }
         ),
       },
     ],
